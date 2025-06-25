@@ -14,17 +14,18 @@ const sheetName = "Sheet1";
 
 // just for like knowing which excel
 const url = "https://docs.google.com/spreadsheets/d/1acQ7qOlcUXHxdZ1QxOwBkcVVMxc_KsTtXM1jzh4LGYQ/edit?gid=0#gid=0"
-
-
+const logo_url = "https://rimanoble04.github.io/Hespertech/img/logo/hespertech-logo-min.png"
+const logo_blob =
+    UrlFetchApp.fetch(logo_url).getBlob().setName('company_logo');
 
 function testEmailTemplatesSendToSelf() {
-    const testName = "john doe";
+    const testName = "why john";
     const testEmail = "johndoe@example.com";
     const testSubject = "Product Inquiry";
     const testMessage = "I would like to know more about your product pricing and availability.";
 
     const clientHTML = createClientEmailTemplate(testName, testSubject, testMessage, testEmail);
-    const inboxHTML = createInboxEmailTemplate(testName, testSubject, testMessage, testEmail);
+    const inboxHTML = createNotificationEmailTemplate(testName, testSubject, testMessage, testEmail);
 
     const myEmail = Session.getActiveUser().getEmail();
 
@@ -32,14 +33,20 @@ function testEmailTemplatesSendToSelf() {
     MailApp.sendEmail({
         to: myEmail,
         subject: "We will contact you soon",
-        htmlBody: clientHTML
+        htmlBody: clientHTML,
+        inlineImages: {
+            company_logo: logo_blob
+        }
     });
 
     // Send the "inbox" styled email
     MailApp.sendEmail({
         to: myEmail,
-        subject: "idk d.",
-        htmlBody: inboxHTML
+        subject: testName,
+        htmlBody: inboxHTML,
+        inlineImages: {
+            company_logo: logo_blob
+        }
     });
 }
 
@@ -117,7 +124,7 @@ function createClientEmailTemplate(name, subject, body, email) {
                                                 <tr>
                                                     <td align="left" valign="middle">
                                                         <a href="https://hespertech.in/" style="color:#0a66c2;display:inline-block;text-decoration:none;width:120px" target="_blank">
-                                                            <img alt="HesperTech" src="https://rimanoble04.github.io/Hespertech/img/logo/hespertech-logo-min.png" style="outline:none;text-decoration:none;height:80px;width:auto">
+                                                            <img alt="HesperTech" src=\'cid:company_logo\' style="outline:none;text-decoration:none;height:80px;width:auto">
                                                         </a>
                                                     </td>
                                                     <td valign="middle" align="right">
@@ -261,7 +268,7 @@ function createClientEmailTemplate(name, subject, body, email) {
 }
 
 
-function createInboxEmailTemplate(name, subject, body, email) {
+function createNotificationEmailTemplate(name, subject, body, email) {
     name = name.replace(/\b(\w)/g, (s) => s.toUpperCase());
 
     return `
@@ -278,18 +285,18 @@ function createInboxEmailTemplate(name, subject, body, email) {
     <div style="height:0px;max-height:0;width:0px;overflow:hidden;opacity:0"> ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; </div>
     <div
         style="margin:0px;width:100%;background-color:#f3f2f0;padding:0px;padding-top:8px;font-family:-apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue','Fira Sans',Ubuntu,Oxygen,'Oxygen Sans',Cantarell,'Droid Sans','Apple Color Emoji','Segoe UI Emoji','Segoe UI Emoji','Segoe UI Symbol','Lucida Grande',Helvetica,Arial,sans-serif">
-        <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="512" align="center"
-            style="margin-left:auto;margin-right:auto;margin-top:0px;margin-bottom:0px;width:512px;max-width:512px;padding:0px">
+        <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="100%" align="center"
+            style="margin-left:auto;margin-right:auto;margin-top:0px;margin-bottom:0px;width:100%;max-width:512px;padding:0px">
             <tbody>
                 <tr>
                     <td>
                         <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="100%"
-                            style="background-color:#ffffff">
+                            style="background-color:#ffffff;width:100%">
                             <tbody>
                                 <tr>
                                     <td style="padding:24px;text-align:center">
                                         <table role="presentation" valign="top" border="0" cellspacing="0"
-                                            cellpadding="0" width="100%" style="min-width:100%">
+                                            cellpadding="0" width="100%" style="min-width:100%;width:100%">
                                             <tbody>
                                                 <tr>
                                                     <td align="left" valign="middle">
@@ -297,7 +304,7 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                             style="color:#0a66c2;display:inline-block;text-decoration:none;width:120px"
                                                             target="_blank">
                                                             <img alt="HesperTech"
-                                                                src="https://rimanoble04.github.io/Hespertech/img/logo/hespertech-logo-min.png"
+                                                                src=\'cid:company_logo\'
                                                                 style="outline:none;text-decoration:none;height:80px;width:auto">
                                                         </a>
                                                     </td>
@@ -312,18 +319,18 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-left:24px;padding-right:24px;padding-bottom:24px">
+                                    <td style="padding-left:16px;padding-right:16px;padding-bottom:24px">
                                         <div>
                                             <table role="presentation" valign="top" border="0" cellspacing="0"
-                                                cellpadding="0" width="100%">
+                                                cellpadding="0" width="100%" style="width:100%">
                                                 <tbody>
                                                     <tr>
-                                                        <td>
+                                                        <td style="width:100%">
                                                             <table role="presentation" valign="top" border="0"
-                                                                cellspacing="0" cellpadding="0" width="100%">
+                                                                cellspacing="0" cellpadding="0" width="100%" style="width:100%">
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td>
+                                                                        <td style="width:100%">
                                                                             <h2
                                                                                 style="margin:0;color:#333;font-size:20px;font-weight:600;line-height:1.3">
                                                                                 Client Inquiry Received
@@ -331,49 +338,46 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                      
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style="padding-top:24px">
+                                                                        <td style="padding-top:24px;width:100%">
                                                                             <div
-                                                                                style="background-color:#f8f9fa;padding:24px;border-radius:8px;border-left:4px solid #28a745;">
+                                                                                style="background-color:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #28a745;width:100%;box-sizing:border-box">
                                                                                 <h3
                                                                                     style="margin:0 0 16px 0;color:#333;font-size:16px;font-weight:600;">
                                                                                     Client Information</h3>
                                                                                 <table
-                                                                                    style="width:100%;border-collapse:collapse;">
+                                                                                    style="width:100%;border-collapse:collapse;table-layout:fixed">
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;width:80px;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;width:25%;vertical-align:top;word-break:break-word">
                                                                                             Name:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;width:75%;word-break:break-word">
                                                                                             ${name}</td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Email:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;word-break:break-all">
                                                                                             <a href="mailto:${email}"
-                                                                                                style="color:#0a66c2;text-decoration:none;">${email}</a>
+                                                                                                style="color:#0a66c2;text-decoration:none;word-break:break-all">${email}</a>
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Subject:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;word-break:break-word">
                                                                                             ${subject}</td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Submitted:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#666;font-size:14px;">
+                                                                                            style="padding:6px 0;color:#666;font-size:14px;word-break:break-word">
                                                                                             ${new
             Date().toLocaleString('en-IN',
                 {
@@ -385,14 +389,14 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td style="padding-top:20px">
+                                                                        <td style="padding-top:20px;width:100%">
                                                                             <div
-                                                                                style="background-color:#fff;padding:20px;border-radius:8px;border:1px solid #e9ecef;">
+                                                                                style="background-color:#fff;padding:16px;border-radius:8px;border:1px solid #e9ecef;width:100%;box-sizing:border-box">
                                                                                 <h3
                                                                                     style="margin:0 0 12px 0;color:#333;font-size:16px;font-weight:600;">
                                                                                     Client Message</h3>
                                                                                 <p
-                                                                                    style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#333;">
+                                                                                    style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#333;word-break:break-word;overflow-wrap:break-word">
                                                                                     ${body}
                                                                                 </p>
                                                                             </div>
@@ -400,7 +404,7 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                                     </tr>
                                                                
                                                                     <tr>
-                                                                        <td style="padding-top:24px;text-align:center">
+                                                                        <td style="padding-top:24px;text-align:center;width:100%">
                                                                             <a href="mailto:${email}?subject=Re: ${subject}"
                                                                                 style="background-color:#0a66c2;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:600;display:inline-block;">
                                                                                 Reply to Client
@@ -419,7 +423,7 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                 <tr>
                                     <td style="background-color:#f3f2f0;padding:24px">
                                         <table role="presentation" valign="top" border="0" cellspacing="0"
-                                            cellpadding="0" width="100%" style="font-size:12px">
+                                            cellpadding="0" width="100%" style="font-size:12px;width:100%">
                                             <tbody>
                                                 <tr>
                                                     <td style="margin:0px;padding-bottom:8px;color:#666;">
@@ -515,16 +519,22 @@ function doPost(e) {
         MailApp.sendEmail({
             to: obj.email,
             subject: `We will contact you soon`,
-            htmlBody: htmlBody
+            htmlBody: htmlBody,
+            inlineImages: {
+                company_logo: logo_blob,
+            },
         });
 
-        const inboxMail = createInboxEmailTemplate(obj.name, obj.subject, obj.body, obj.email);
+        const inboxMail = createNotificationEmailTemplate(obj.name, obj.subject, obj.body, obj.email);
 
         // Email i should receive
         MailApp.sendEmail({
             to: mygmail,
             subject: `From: ${obj.name} - ${obj.subject}`,
-            htmlBody: inboxMail
+            htmlBody: inboxMail,
+            inlineImages: {
+                company_logo: logo_blob,
+            },
         });
 
 
