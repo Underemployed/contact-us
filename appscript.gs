@@ -12,35 +12,35 @@ const mygmail = getColumn('CONFIG', 'Email')[0]; // getting variables from sheet
 // const mygmail = Session.getActiveUser().getEmail(); 
 const sheetName = "Sheet1";
 
-// just for like knowing which excel
-const url = "https://docs.google.com/spreadsheets/d/1acQ7qOlcUXHxdZ1QxOwBkcVVMxc_KsTtXM1jzh4LGYQ/edit?gid=0#gid=0"
-
+// just for like knowing which excel not used
+// const url = "https://docs.google.com/spreadsheets/d/1acQ7qOlcUXHxdZ1QxOwBkcVVMxc_KsTtXM1jzh4LGYQ/edit?gid=0#gid=0"
+// const logo_url = "https://rimanoble04.github.io/Hespertech/img/logo/hespertech-logo-min.png" 
 
 
 function testEmailTemplatesSendToSelf() {
-    const testName = "john doe";
-    const testEmail = "johndoe@example.com";
-    const testSubject = "Product Inquiry";
-    const testMessage = "I would like to know more about your product pricing and availability.";
+  const testName = "why john";
+  const testEmail = "johndoe@example.com";
+  const testSubject = "Product Inquiry";
+  const testMessage = "I would like to know more about your product pricing and availability.";
 
-    const clientHTML = createClientEmailTemplate(testName, testSubject, testMessage, testEmail);
-    const inboxHTML = createInboxEmailTemplate(testName, testSubject, testMessage, testEmail);
+  const clientHTML = createClientEmailTemplate(testName, testSubject, testMessage, testEmail);
+  const inboxHTML = createNotificationEmailTemplate(testName, testSubject, testMessage, testEmail);
 
-    const myEmail = Session.getActiveUser().getEmail();
+  const myEmail = Session.getActiveUser().getEmail();
 
-    // Send the "client" styled email
-    MailApp.sendEmail({
-        to: myEmail,
-        subject: "We will contact you soon",
-        htmlBody: clientHTML
-    });
+  // Send the "client" styled email
+  MailApp.sendEmail({
+    to: myEmail,
+    subject: "We will contact you soon",
+    htmlBody: clientHTML
+  });
 
-    // Send the "inbox" styled email
-    MailApp.sendEmail({
-        to: myEmail,
-        subject: "idk d.",
-        htmlBody: inboxHTML
-    });
+  // Send the "inbox" styled email
+  MailApp.sendEmail({
+    to: myEmail,
+    subject: testName,
+    htmlBody: inboxHTML
+  });
 }
 
 
@@ -52,25 +52,25 @@ function testEmailTemplatesSendToSelf() {
 
 
 function createSuccessResponse() {
-    return ContentService.createTextOutput(JSON.stringify({ "result": "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify({ "result": "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function createErrorResponse(err) {
-    let errorSheet = selectOrCreateSheet("Errors");
-    let dateTime = new Date();
-    let errorInfo = [dateTime.toLocaleString(), err.message];
-    if (errorSheet.getLastRow() === 0) errorSheet.appendRow(headers.error);
-    errorSheet.appendRow(errorInfo);
-    return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": err.message }))
-        .setMimeType(ContentService.MimeType.JSON);
+  let errorSheet = selectOrCreateSheet("Errors");
+  let dateTime = new Date();
+  let errorInfo = [dateTime.toLocaleString(), err.message];
+  if (errorSheet.getLastRow() === 0) errorSheet.appendRow(headers.error);
+  errorSheet.appendRow(errorInfo);
+  return ContentService.createTextOutput(JSON.stringify({ "result": "error", "error": err.message }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 // Function to get a column from a sheet with trimming
 function getColumn(sheetName, column, url = null) {
     let sheet = selectOrCreateSheet(sheetName, url);
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-
+    
     // Normalize headers by trimming and lowering case
     const lowerHeaders = headers.map(header => header.toString().trim().toLowerCase());
     const lowerColumn = column.trim().toLowerCase();
@@ -82,11 +82,11 @@ function getColumn(sheetName, column, url = null) {
 
     const columnValues = sheet.getRange(2, columnIndex + 1, sheet.getLastRow() - 1, 1).getValues();
     const flattenedValues = columnValues.map(row => row[0]?.toString().trim() ?? '');
-
+    
     return flattenedValues;
 }
 
-function createClientEmailTemplate(name, subject, body, email) {
+function createClientEmailTemplate(name, subject, body , email) {
 
     name = name.replace(/\b(\w)/g, (s) => s.toUpperCase());
 
@@ -261,7 +261,7 @@ function createClientEmailTemplate(name, subject, body, email) {
 }
 
 
-function createInboxEmailTemplate(name, subject, body, email) {
+function createNotificationEmailTemplate(name, subject, body, email) {
     name = name.replace(/\b(\w)/g, (s) => s.toUpperCase());
 
     return `
@@ -278,18 +278,18 @@ function createInboxEmailTemplate(name, subject, body, email) {
     <div style="height:0px;max-height:0;width:0px;overflow:hidden;opacity:0"> ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; ͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp;͏&nbsp; </div>
     <div
         style="margin:0px;width:100%;background-color:#f3f2f0;padding:0px;padding-top:8px;font-family:-apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue','Fira Sans',Ubuntu,Oxygen,'Oxygen Sans',Cantarell,'Droid Sans','Apple Color Emoji','Segoe UI Emoji','Segoe UI Emoji','Segoe UI Symbol','Lucida Grande',Helvetica,Arial,sans-serif">
-        <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="512" align="center"
-            style="margin-left:auto;margin-right:auto;margin-top:0px;margin-bottom:0px;width:512px;max-width:512px;padding:0px">
+        <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="100%" align="center"
+            style="margin-left:auto;margin-right:auto;margin-top:0px;margin-bottom:0px;width:100%;max-width:512px;padding:0px">
             <tbody>
                 <tr>
                     <td>
                         <table role="presentation" valign="top" border="0" cellspacing="0" cellpadding="0" width="100%"
-                            style="background-color:#ffffff">
+                            style="background-color:#ffffff;width:100%">
                             <tbody>
                                 <tr>
                                     <td style="padding:24px;text-align:center">
                                         <table role="presentation" valign="top" border="0" cellspacing="0"
-                                            cellpadding="0" width="100%" style="min-width:100%">
+                                            cellpadding="0" width="100%" style="min-width:100%;width:100%">
                                             <tbody>
                                                 <tr>
                                                     <td align="left" valign="middle">
@@ -312,18 +312,18 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-left:24px;padding-right:24px;padding-bottom:24px">
+                                    <td style="padding-left:16px;padding-right:16px;padding-bottom:24px">
                                         <div>
                                             <table role="presentation" valign="top" border="0" cellspacing="0"
-                                                cellpadding="0" width="100%">
+                                                cellpadding="0" width="100%" style="width:100%">
                                                 <tbody>
                                                     <tr>
-                                                        <td>
+                                                        <td style="width:100%">
                                                             <table role="presentation" valign="top" border="0"
-                                                                cellspacing="0" cellpadding="0" width="100%">
+                                                                cellspacing="0" cellpadding="0" width="100%" style="width:100%">
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td>
+                                                                        <td style="width:100%">
                                                                             <h2
                                                                                 style="margin:0;color:#333;font-size:20px;font-weight:600;line-height:1.3">
                                                                                 Client Inquiry Received
@@ -331,68 +331,64 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                      
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style="padding-top:24px">
+                                                                        <td style="padding-top:24px;width:100%">
                                                                             <div
-                                                                                style="background-color:#f8f9fa;padding:24px;border-radius:8px;border-left:4px solid #28a745;">
+                                                                                style="background-color:#f8f9fa;padding:16px;border-radius:8px;border-left:4px solid #28a745;width:100%;box-sizing:border-box">
                                                                                 <h3
                                                                                     style="margin:0 0 16px 0;color:#333;font-size:16px;font-weight:600;">
                                                                                     Client Information</h3>
                                                                                 <table
-                                                                                    style="width:100%;border-collapse:collapse;">
+                                                                                    style="width:100%;border-collapse:collapse;table-layout:fixed">
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;width:80px;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;width:25%;vertical-align:top;word-break:break-word">
                                                                                             Name:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;width:75%;word-break:break-word">
                                                                                             ${name}</td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Email:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;word-break:break-all">
                                                                                             <a href="mailto:${email}"
-                                                                                                style="color:#0a66c2;text-decoration:none;">${email}</a>
+                                                                                                style="color:#0a66c2;text-decoration:none;word-break:break-all">${email}</a>
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Subject:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#333;">
+                                                                                            style="padding:6px 0;color:#333;word-break:break-word">
                                                                                             ${subject}</td>
                                                                                     </tr>
                                                                                     <tr>
                                                                                         <td
-                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;">
+                                                                                            style="padding:6px 0;font-weight:600;color:#333;vertical-align:top;word-break:break-word">
                                                                                             Submitted:</td>
                                                                                         <td
-                                                                                            style="padding:6px 0;color:#666;font-size:14px;">
+                                                                                            style="padding:6px 0;color:#666;font-size:14px;word-break:break-word">
                                                                                             ${new
-            Date().toLocaleString('en-IN',
-                {
-                    timeZone: 'Asia/Kolkata'
-                })}</td>
+                                                                                            Date().toLocaleString('en-IN',
+                                                                                            { timeZone: 'Asia/Kolkata'
+                                                                                            })}</td>
                                                                                     </tr>
                                                                                 </table>
                                                                             </div>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td style="padding-top:20px">
+                                                                        <td style="padding-top:20px;width:100%">
                                                                             <div
-                                                                                style="background-color:#fff;padding:20px;border-radius:8px;border:1px solid #e9ecef;">
+                                                                                style="background-color:#fff;padding:16px;border-radius:8px;border:1px solid #e9ecef;width:100%;box-sizing:border-box">
                                                                                 <h3
                                                                                     style="margin:0 0 12px 0;color:#333;font-size:16px;font-weight:600;">
                                                                                     Client Message</h3>
                                                                                 <p
-                                                                                    style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#333;">
+                                                                                    style="margin:0;font-weight:400;font-size:15px;line-height:1.6;color:#333;word-break:break-word;overflow-wrap:break-word">
                                                                                     ${body}
                                                                                 </p>
                                                                             </div>
@@ -400,7 +396,7 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                                                     </tr>
                                                                
                                                                     <tr>
-                                                                        <td style="padding-top:24px;text-align:center">
+                                                                        <td style="padding-top:24px;text-align:center;width:100%">
                                                                             <a href="mailto:${email}?subject=Re: ${subject}"
                                                                                 style="background-color:#0a66c2;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:600;display:inline-block;">
                                                                                 Reply to Client
@@ -419,7 +415,7 @@ function createInboxEmailTemplate(name, subject, body, email) {
                                 <tr>
                                     <td style="background-color:#f3f2f0;padding:24px">
                                         <table role="presentation" valign="top" border="0" cellspacing="0"
-                                            cellpadding="0" width="100%" style="font-size:12px">
+                                            cellpadding="0" width="100%" style="font-size:12px;width:100%">
                                             <tbody>
                                                 <tr>
                                                     <td style="margin:0px;padding-bottom:8px;color:#666;">
@@ -463,19 +459,19 @@ function createInboxEmailTemplate(name, subject, body, email) {
 </html>
     `.trim();
 }
-
+  
 function validateInput(e) {
-    if (!e.postData.contents) throw new Error("No data provided");
-    let obj = JSON.parse(e.postData.contents);
-    if (!obj.name || !obj.email || !obj.subject || !obj.body) throw new Error("Missing required fields");
+  if (!e.postData.contents) throw new Error("No data provided");
+  let obj = JSON.parse(e.postData.contents);
+  if (!obj.name || !obj.email || !obj.subject || !obj.body) throw new Error("Missing required fields");
 
-    for (let key in obj) {
-        if (typeof obj[key] === 'string') {
-            obj[key] = obj[key].trim();
-        }
+  for (let key in obj) {
+    if (typeof obj[key] === 'string') {
+      obj[key] = obj[key].trim();
     }
+  }
 
-    return obj;
+  return obj;
 }
 
 // Function to select or create a sheet
@@ -492,65 +488,65 @@ function selectOrCreateSheet(sheetName, url = null) {
 
 
 function appendToSheet(dataObject, sheet) {
-    if (sheet.getLastRow() === 0) sheet.appendRow(Object.keys(dataObject)); // header 
-    sheet.appendRow(Object.values(dataObject));
-
+  if (sheet.getLastRow() === 0) sheet.appendRow(Object.keys(dataObject)); // header 
+  sheet.appendRow(Object.values(dataObject));
+  
 }
 
 function doPost(e) {
-    try {
-        // Validate input using your existing function
-        const obj = validateInput(e);
+  try {
+    // Validate input using your existing function
+    const obj = validateInput(e);
 
-        // Add date and time fields
-        const now = new Date();
-        obj["Date"] = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd");
-        obj["Time"] = Utilities.formatDate(now, Session.getScriptTimeZone(), "HH:mm:ss");
-
-
-        // Create confirmation email content
-        const htmlBody = createClientEmailTemplate(obj.name, obj.subject, obj.body, obj.email);
-
-        // Send the confirmation email
-        MailApp.sendEmail({
-            to: obj.email,
-            subject: `We will contact you soon`,
-            htmlBody: htmlBody
-        });
-
-        const inboxMail = createInboxEmailTemplate(obj.name, obj.subject, obj.body, obj.email);
-
-        // Email i should receive
-        MailApp.sendEmail({
-            to: mygmail,
-            subject: `From: ${obj.name} - ${obj.subject}`,
-            htmlBody: inboxMail
-        });
+    // Add date and time fields
+    const now = new Date();
+    obj["Date"] = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd");
+    obj["Time"] = Utilities.formatDate(now, Session.getScriptTimeZone(), "HH:mm:ss");
 
 
+    // Create confirmation email content
+    const htmlBody = createClientEmailTemplate(obj.name, obj.subject, obj.body, obj.email);
 
-        // Optionally store email metadata in a tracking sheet
-        const emailSheet = selectOrCreateSheet("Email");
-        const trackingData = {
-            Name: obj.name,
-            Email: obj.email,
-            Subject: obj.subject,
-            Body: obj.body,
-            Date: obj.Date,
-            Time: obj.Time
-        };
+    // Send the confirmation email
+    MailApp.sendEmail({
+      to: obj.email,
+      subject: `We will contact you soon`,
+      htmlBody: htmlBody
+    });
 
-        appendToSheet(trackingData, emailSheet);
+    const inboxMail = createNotificationEmailTemplate(obj.name, obj.subject, obj.body,obj.email);
+
+    // Email i should receive
+    MailApp.sendEmail({
+      to: mygmail,
+      subject: `From: ${obj.name} - ${obj.subject}`,
+      htmlBody: inboxMail
+    });
 
 
 
-        // Return success response
-        return createSuccessResponse();
+    // Optionally store email metadata in a tracking sheet
+    const emailSheet = selectOrCreateSheet("Email");
+    const trackingData = {
+      Name: obj.name,
+      Email: obj.email,
+      Subject: obj.subject,
+      Body: obj.body,
+      Date: obj.Date,
+      Time: obj.Time
+    };
+
+    appendToSheet(trackingData, emailSheet);
 
 
-    } catch (err) {
-        return createErrorResponse(err);
-    }
+
+    // Return success response
+    return createSuccessResponse();
+
+
+  } catch (err) {
+    return createErrorResponse(err);
+  }
 }
 
 
